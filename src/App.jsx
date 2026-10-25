@@ -4,6 +4,9 @@ import Header from './components/Header';
 import Home from './pages/Home';
 import Favorites from './pages/Favorites';
 import './App.css';
+import { MovieProvider } from "./contexts/MovieContext";
+import Watchlist from './pages/Watchlist';
+
 
 function App() {
   // Search results (shared by Header + Home)
@@ -21,32 +24,41 @@ function App() {
   }, [favorites]);
 
   return (
-    <Router>
-      <div className="app">
-        {/* Header can update search results */}
-        <Header setSearchResults={setSearchResults} />
+    <MovieProvider>
+      <Router>
+        <div className="app">
+          <Header setSearchResults={setSearchResults} />
 
-        <Routes>
-          {/* Home receives movies + favorites */}
-          <Route 
-            path="/" 
-            element={
-              <Home 
-                movies={searchResults} 
-                favorites={favorites} 
-                setFavorites={setFavorites}
-              />
-            } 
-          />
+          <Routes>
+            <Route 
+              path="/" 
+              element={
+                <Home 
+                  movies={searchResults} 
+                  favorites={favorites} 
+                  setFavorites={setFavorites}
+                />
+              } 
+            />
 
-          {/* Favorites page receives favorites */}
-          <Route 
-            path="/favorites" 
-            element={<Favorites favorites={favorites} setFavorites={setFavorites} />}
-          />
-        </Routes>
-      </div>
-    </Router>
+            <Route 
+              path="/favorites" 
+              element={<Favorites favorites={favorites} setFavorites={setFavorites} />}
+            />
+
+             <Route 
+               path="/watchlist" 
+               element={
+                 <Watchlist 
+                   favorites={favorites}
+                   setFavorites={setFavorites}
+                />
+               }
+            />
+          </Routes>
+        </div>
+      </Router>
+    </MovieProvider>
   );
 }
 

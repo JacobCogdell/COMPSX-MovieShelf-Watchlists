@@ -1,16 +1,24 @@
+import { useContext } from "react";
+import { MovieContext } from "../contexts/MovieContext";
+
 function MovieCard({ movie, favorites, setFavorites }) {
+  // Watchlist context
+  const { watchlist, addToWatchlist, removeFromWatchlist } = useContext(MovieContext);
+
+  // Favorite logic (unchanged)
   const isFavorite = favorites.some(fav => fav.id === movie.id);
 
   const toggleFavorite = () => {
     if (isFavorite) {
-      // Remove movie from favorites
       const updated = favorites.filter(fav => fav.id !== movie.id);
       setFavorites(updated);
     } else {
-      // Add movie to favorites
       setFavorites([...favorites, movie]);
     }
   };
+
+  // Watchlist logic
+  const isInWatchlist = watchlist.some(w => w.id === movie.id);
 
   const posterUrl = movie.poster_path
     ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
@@ -35,11 +43,24 @@ function MovieCard({ movie, favorites, setFavorites }) {
           </span>
         </div>
 
+        {/* Favorites button */}
         <button 
           className="favorite-button"
           onClick={toggleFavorite}
         >
           {isFavorite ? "♥ Remove Favorite" : "♡ Add to Favorites"}
+        </button>
+
+        {/* Watchlist button */}
+        <button
+          className="watchlist-button"
+          onClick={() =>
+            isInWatchlist
+              ? removeFromWatchlist(movie.id)
+              : addToWatchlist(movie)
+          }
+        >
+          {isInWatchlist ? "✓ In Watchlist" : "+ Add to Watchlist"}
         </button>
       </div>
     </div>
